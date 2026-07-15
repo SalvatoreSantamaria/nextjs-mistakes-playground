@@ -1,10 +1,65 @@
 export type MistakeMode = "live" | "explain";
 
+export type MistakeCategoryId =
+  | "server-client"
+  | "data-fetching"
+  | "caching"
+  | "mutations"
+  | "routing"
+  | "security"
+  | "assets";
+
+export type MistakeCategory = {
+  id: MistakeCategoryId;
+  label: string;
+  description: string;
+};
+
+export const categories: MistakeCategory[] = [
+  {
+    id: "server-client",
+    label: "Server & Client Components",
+    description:
+      "Where 'use client' belongs, hydration, and what can cross the RSC boundary.",
+  },
+  {
+    id: "data-fetching",
+    label: "Data Fetching",
+    description: "Reading data in RSC, layouts, and metadata — without extra hops.",
+  },
+  {
+    id: "caching",
+    label: "Caching & Revalidation",
+    description: "Memoization, cache tags, freshness, and invalidation scope.",
+  },
+  {
+    id: "mutations",
+    label: "Server Actions & Mutations",
+    description: "Safe writes, action file boundaries, and post-mutation updates.",
+  },
+  {
+    id: "routing",
+    label: "Routing & Navigation",
+    description: "Redirects, layouts, loading/error UI, Suspense, and Link behavior.",
+  },
+  {
+    id: "security",
+    label: "Secrets & Exposure",
+    description: "Env vars, RSC payload leaks, and keeping server-only modules private.",
+  },
+  {
+    id: "assets",
+    label: "Fonts, Images & Production",
+    description: "CLS-safe fonts, responsive images, and cleaner production builds.",
+  },
+];
+
 export type Mistake = {
   id: number;
   slug: string;
   title: string;
   mode: MistakeMode;
+  category: MistakeCategoryId;
   problem: string;
   solution: string;
 };
@@ -15,6 +70,7 @@ export const mistakes: Mistake[] = [
     slug: "use-client-on-root",
     title: "Marking the Root Page as a Client Component",
     mode: "live",
+    category: "server-client",
     problem:
       'Adding "use client" at the top of a root page forces the entire tree to render on the client, losing Server Component benefits.',
     solution:
@@ -25,6 +81,7 @@ export const mistakes: Mistake[] = [
     slug: "unprotected-server-actions",
     title: "Not Protecting Server Actions",
     mode: "live",
+    category: "mutations",
     problem:
       "Server Actions are public HTTP endpoints. Unprotected actions can be triggered by anyone.",
     solution:
@@ -35,6 +92,7 @@ export const mistakes: Mistake[] = [
     slug: "gets-in-use-server-file",
     title: "Placing Server Component get Calls Inside a Server Actions File",
     mode: "live",
+    category: "mutations",
     problem:
       'Any export from a "use server" file becomes a public endpoint. Putting get/fetch helpers there exposes them unnecessarily.',
     solution:
@@ -45,6 +103,7 @@ export const mistakes: Mistake[] = [
     slug: "route-handlers-vs-rsc",
     title: "Using Route Handlers Instead of Server Components for GET Requests",
     mode: "live",
+    category: "data-fetching",
     problem:
       "Creating /api GET routes for simple reads adds boilerplate and often forces client fetching.",
     solution:
@@ -55,6 +114,7 @@ export const mistakes: Mistake[] = [
     slug: "suspense-wrong-level",
     title: "Placing a Suspense Boundary at the Wrong Level",
     mode: "live",
+    category: "routing",
     problem:
       "Wrapping the async call itself with Suspense does not show the fallback correctly.",
     solution:
@@ -65,6 +125,7 @@ export const mistakes: Mistake[] = [
     slug: "use-cache-vs-private",
     title: "Mixing Up use cache and use cache private",
     mode: "explain",
+    category: "caching",
     problem:
       "Using use cache for user-specific data (cookies/headers) can leak data or error at runtime.",
     solution:
@@ -75,6 +136,7 @@ export const mistakes: Mistake[] = [
     slug: "update-tag-vs-refresh",
     title: "Using updateTag When You Mean to Use refresh",
     mode: "live",
+    category: "caching",
     problem:
       "Cache tag invalidation and router.refresh solve different staleness problems; mixing them up leaves bad UX.",
     solution:
@@ -85,6 +147,7 @@ export const mistakes: Mistake[] = [
     slug: "context-provider-layout",
     title: "Incorrectly Using Context Providers with the App Router",
     mode: "live",
+    category: "server-client",
     problem:
       "Marking the root layout as a client provider can push the whole tree to the client.",
     solution:
@@ -95,6 +158,7 @@ export const mistakes: Mistake[] = [
     slug: "window-in-server-component",
     title: "Using window or Client Handlers Inside a Server Component",
     mode: "live",
+    category: "server-client",
     problem:
       "Server Components run in Node and have no window, document, or DOM event handlers.",
     solution:
@@ -105,6 +169,7 @@ export const mistakes: Mistake[] = [
     slug: "unnecessary-use-client",
     title: 'Adding "use client" Unnecessarily',
     mode: "live",
+    category: "server-client",
     problem:
       'Developers add "use client" for simple forms, assuming any interactivity needs it.',
     solution:
@@ -115,6 +180,7 @@ export const mistakes: Mistake[] = [
     slug: "revalidate-after-mutation",
     title: "Not Revalidating Data After Mutations",
     mode: "live",
+    category: "caching",
     problem:
       "After a Server Action mutation, the UI can stay stale if caches are not updated.",
     solution:
@@ -125,6 +191,7 @@ export const mistakes: Mistake[] = [
     slug: "redirect-in-try-catch",
     title: "Redirecting Inside a try-catch Block",
     mode: "live",
+    category: "routing",
     problem:
       "redirect() throws internally; a catch block can swallow it and block navigation.",
     solution:
@@ -135,6 +202,7 @@ export const mistakes: Mistake[] = [
     slug: "force-server-interactive",
     title: "Forcing Everything to Be a Server Component",
     mode: "live",
+    category: "server-client",
     problem:
       "Highly interactive UI as Server Components means laggy round-trips and poor UX.",
     solution:
@@ -145,6 +213,7 @@ export const mistakes: Mistake[] = [
     slug: "loading-tsx",
     title: "Not Using loading.tsx for Loading States",
     mode: "live",
+    category: "routing",
     problem:
       "Converting pages to client components just to show a spinner adds unnecessary JS.",
     solution:
@@ -155,6 +224,7 @@ export const mistakes: Mistake[] = [
     slug: "duplicate-fetch-metadata",
     title: "Fetching the Same Data Twice (Metadata and Page)",
     mode: "live",
+    category: "data-fetching",
     problem:
       "Calling the same fetch in generateMetadata and the page doubles work.",
     solution:
@@ -165,6 +235,7 @@ export const mistakes: Mistake[] = [
     slug: "hydration-errors",
     title: "Not Resolving Hydration Errors Correctly",
     mode: "live",
+    category: "server-client",
     problem:
       "Server HTML that does not match client HTML causes hydration errors.",
     solution:
@@ -175,6 +246,7 @@ export const mistakes: Mistake[] = [
     slug: "layout-persistent-fetch",
     title: "Not Using layout.tsx for Persistent Data Fetching",
     mode: "live",
+    category: "data-fetching",
     problem:
       "Refetching shared nav/profile data on every page wastes work.",
     solution:
@@ -185,6 +257,7 @@ export const mistakes: Mistake[] = [
     slug: "cache-expensive-functions",
     title: "Not Caching Repeatable Code / Expensive Functions",
     mode: "live",
+    category: "caching",
     problem:
       "The same expensive function runs multiple times in one render tree.",
     solution:
@@ -195,6 +268,7 @@ export const mistakes: Mistake[] = [
     slug: "env-vars-client",
     title: "Using Environment Variables in Client Components Without Proper Naming",
     mode: "live",
+    category: "security",
     problem:
       "Server secrets leak if exposed to the client, or public vars fail if misnamed.",
     solution:
@@ -205,6 +279,7 @@ export const mistakes: Mistake[] = [
     slug: "error-tsx",
     title: "Not Using error.tsx Alongside loading.tsx",
     mode: "live",
+    category: "routing",
     problem:
       "loading.tsx without error.tsx leaves a broken UI when fetching fails.",
     solution:
@@ -215,6 +290,7 @@ export const mistakes: Mistake[] = [
     slug: "dynamic-metadata-export",
     title: "Trying to Use Dynamic Functions Directly in metadata Export",
     mode: "explain",
+    category: "data-fetching",
     problem:
       "export const metadata must be a static object; dynamic values do not work there.",
     solution:
@@ -225,6 +301,7 @@ export const mistakes: Mistake[] = [
     slug: "cache-request-memoization",
     title: "Not Using the cache Function for Request Memoization",
     mode: "live",
+    category: "caching",
     problem:
       "Identical requests fire multiple times in one render cycle.",
     solution:
@@ -235,6 +312,7 @@ export const mistakes: Mistake[] = [
     slug: "redirect-vs-router-push",
     title: "Mixing Up redirect vs router.push",
     mode: "live",
+    category: "routing",
     problem:
       "Using the wrong navigation API for server vs client context.",
     solution:
@@ -245,6 +323,7 @@ export const mistakes: Mistake[] = [
     slug: "next-font",
     title: "Causing Layout Shifts by Loading Google Fonts Manually",
     mode: "live",
+    category: "assets",
     problem:
       "Manual CSS/script font loading causes CLS while fallback fonts flash.",
     solution:
@@ -255,6 +334,7 @@ export const mistakes: Mistake[] = [
     slug: "remove-console",
     title: "Leaving Debug Logs That Clutter Server Logs",
     mode: "explain",
+    category: "assets",
     problem:
       "console.log in production clutters logs, can leak data, and costs money at scale.",
     solution:
@@ -265,6 +345,7 @@ export const mistakes: Mistake[] = [
     slug: "image-sizes",
     title: "Images Without sizes Prop",
     mode: "live",
+    category: "assets",
     problem:
       "Without sizes, next/image may download oversized assets on small viewports.",
     solution:
@@ -275,6 +356,7 @@ export const mistakes: Mistake[] = [
     slug: "cache-tags",
     title: "Not Tagging the Cache Correctly",
     mode: "live",
+    category: "caching",
     problem:
       "Without tags you cannot selectively invalidate; you end up purging broad caches.",
     solution:
@@ -285,6 +367,7 @@ export const mistakes: Mistake[] = [
     slug: "mutations-in-rsc",
     title: "Executing Mutations Inside Server Components",
     mode: "live",
+    category: "mutations",
     problem:
       "Mutating during RSC render causes races and stale UI — components do not re-render after side effects.",
     solution:
@@ -295,6 +378,7 @@ export const mistakes: Mistake[] = [
     slug: "rsc-calls-own-api",
     title: "Calling Your Own Route Handlers from Server Components",
     mode: "live",
+    category: "data-fetching",
     problem:
       "An RSC that fetch()es its own /api route adds a pointless HTTP hop, base-URL pain, and extra serialization.",
     solution:
@@ -305,6 +389,7 @@ export const mistakes: Mistake[] = [
     slug: "sequential-fetch-waterfall",
     title: "Creating Sequential Data-Fetching Waterfalls",
     mode: "live",
+    category: "data-fetching",
     problem:
       "Awaiting independent requests one after another doubles latency for no reason.",
     solution:
@@ -315,6 +400,7 @@ export const mistakes: Mistake[] = [
     slug: "no-next-dynamic",
     title: "Eagerly Importing Heavy Client Libraries",
     mode: "live",
+    category: "server-client",
     problem:
       "Statically importing large client-only UI pulls it into the initial JS bundle.",
     solution:
@@ -325,6 +411,7 @@ export const mistakes: Mistake[] = [
     slug: "client-auth-redirect",
     title: "Doing Auth Redirects Only on the Client",
     mode: "live",
+    category: "routing",
     problem:
       "Checking auth in useEffect + router.push flashes protected UI before redirecting.",
     solution:
@@ -335,6 +422,7 @@ export const mistakes: Mistake[] = [
     slug: "missing-generate-static-params",
     title: "Skipping generateStaticParams for Known Dynamic Routes",
     mode: "live",
+    category: "routing",
     problem:
       "Dynamic segments with a known finite set of params are rendered on demand with no prebuild.",
     solution:
@@ -345,6 +433,7 @@ export const mistakes: Mistake[] = [
     slug: "non-serializable-props",
     title: "Passing Non-Serializable Props from Server to Client",
     mode: "live",
+    category: "server-client",
     problem:
       "Functions, class instances, and other non-serializable values cannot cross the RSC → client boundary.",
     solution:
@@ -355,6 +444,7 @@ export const mistakes: Mistake[] = [
     slug: "overbroad-revalidate",
     title: "Revalidating Far Too Broadly After Mutations",
     mode: "live",
+    category: "caching",
     problem:
       "Calling revalidatePath('/') (or huge trees) after a tiny write thrash-caches unrelated UI.",
     solution:
@@ -365,6 +455,7 @@ export const mistakes: Mistake[] = [
     slug: "route-groups",
     title: "Not Using Route Groups to Organize the App Tree",
     mode: "explain",
+    category: "routing",
     problem:
       "A flat app/ folder mixes auth, app, and admin routes and makes shared layouts awkward.",
     solution:
@@ -375,6 +466,7 @@ export const mistakes: Mistake[] = [
     slug: "searchparams-without-suspense",
     title: "Using useSearchParams Without a Suspense Boundary",
     mode: "live",
+    category: "routing",
     problem:
       "Calling useSearchParams in a large client tree without Suspense can bail out static rendering for the whole segment.",
     solution:
@@ -385,6 +477,7 @@ export const mistakes: Mistake[] = [
     slug: "blocking-layout-await",
     title: "Blocking the Entire Tree with a Layout Await",
     mode: "live",
+    category: "data-fetching",
     problem:
       "Awaiting slow data in layout.tsx delays every child route until that work finishes.",
     solution:
@@ -395,6 +488,7 @@ export const mistakes: Mistake[] = [
     slug: "fetch-cache-defaults",
     title: "Not Setting fetch Cache Options Intentionally",
     mode: "live",
+    category: "caching",
     problem:
       "Relying on implicit fetch caching leaves data mysteriously stale or over-dynamic.",
     solution:
@@ -405,6 +499,7 @@ export const mistakes: Mistake[] = [
     slug: "rsc-secret-leak",
     title: "Leaking Secrets Through the RSC Payload",
     mode: "live",
+    category: "security",
     problem:
       "Passing full DB rows (tokens, hashes) into Client Components ships secrets in the flight payload.",
     solution:
@@ -415,6 +510,7 @@ export const mistakes: Mistake[] = [
     slug: "missing-server-only",
     title: "Forgetting server-only on Data Access Modules",
     mode: "live",
+    category: "security",
     problem:
       "Without import 'server-only', a DAL can be imported into Client Components and leak server code/secrets.",
     solution:
@@ -425,6 +521,7 @@ export const mistakes: Mistake[] = [
     slug: "form-status-boundary",
     title: "Marking a Whole Form Client Just for useFormStatus",
     mode: "live",
+    category: "server-client",
     problem:
       "Wrapping an entire form in 'use client' only to show a pending state pulls unnecessary JS.",
     solution:
@@ -435,6 +532,7 @@ export const mistakes: Mistake[] = [
     slug: "link-prefetch-heavy",
     title: "Prefetching Heavy or Auth-Gated Links Unconditionally",
     mode: "live",
+    category: "routing",
     problem:
       "Default Link prefetch on large lists or protected destinations wastes bandwidth and work.",
     solution:
@@ -445,6 +543,7 @@ export const mistakes: Mistake[] = [
     slug: "static-route-handler-cache",
     title: "Surprised by Cached GET Route Handlers",
     mode: "live",
+    category: "caching",
     problem:
       "GET Route Handlers can be cached; a “current time” API then returns a stale timestamp.",
     solution:
@@ -458,4 +557,20 @@ export function getMistake(slug: string): Mistake | undefined {
 
 export function getAllSlugs(): string[] {
   return mistakes.map((m) => m.slug);
+}
+
+export function getCategory(id: MistakeCategoryId): MistakeCategory | undefined {
+  return categories.find((c) => c.id === id);
+}
+
+export function getMistakesByCategory(): {
+  category: MistakeCategory;
+  items: Mistake[];
+}[] {
+  return categories.map((category) => ({
+    category,
+    items: mistakes
+      .filter((m) => m.category === category.id)
+      .sort((a, b) => a.id - b.id),
+  }));
 }

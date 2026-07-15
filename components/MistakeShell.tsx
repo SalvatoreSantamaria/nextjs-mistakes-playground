@@ -1,7 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import type { Mistake, MistakeMode } from "@/lib/mistakes";
+import {
+  getCategory,
+  type Mistake,
+  type MistakeMode,
+} from "@/lib/mistakes";
 import { StatusBadge } from "./StatusBadge";
 
 type Props = {
@@ -15,6 +19,7 @@ export function MistakeShell({ mistake, wrong, right }: Props) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode") === "right" ? "right" : "wrong";
+  const category = getCategory(mistake.category);
 
   function setMode(next: "wrong" | "right") {
     const params = new URLSearchParams(searchParams.toString());
@@ -27,6 +32,11 @@ export function MistakeShell({ mistake, wrong, right }: Props) {
       <header className="space-y-3">
         <div className="flex flex-wrap items-center gap-3">
           <span className="font-mono text-sm text-zinc-500">#{mistake.id}</span>
+          {category && (
+            <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+              {category.label}
+            </span>
+          )}
           <StatusBadge mode={mistake.mode as MistakeMode} />
         </div>
         <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
