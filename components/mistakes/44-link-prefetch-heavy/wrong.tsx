@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { DemoNote } from "@/components/DemoNote";
+import { PrefetchList, type PrefetchLink } from "./prefetch-list";
 
-const HEAVY = [
+const HEAVY: PrefetchLink[] = [
   { href: "/mistakes/blocking-layout-await/demo/wrong", label: "Heavy demo A" },
   { href: "/mistakes/blocking-layout-await/demo/right", label: "Heavy demo B" },
   {
@@ -14,20 +14,10 @@ export function Wrong() {
   return (
     <div className="space-y-4">
       <DemoNote tone="wrong">
-        Default <code>Link</code> prefetch is on. A list of heavy or protected
-        destinations can trigger lots of background work the user may never
-        need.
+        On mount we eagerly <code>router.prefetch</code> every heavy/gated link
+        (same effect as default Link prefetch for a long list).
       </DemoNote>
-      <ul className="space-y-2">
-        {HEAVY.map((item) => (
-          <li key={item.href}>
-            <Link href={item.href} className="font-mono text-sm underline">
-              {item.label}
-            </Link>
-            <span className="ml-2 text-xs text-zinc-500">prefetch default</span>
-          </li>
-        ))}
-      </ul>
+      <PrefetchList links={HEAVY} autoPrefetch tone="wrong" />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { DemoNote } from "@/components/DemoNote";
+import { DemoMetric } from "@/components/DemoMetric";
 
 const ThemeContext = createContext<{
   theme: "light" | "dark";
@@ -49,6 +50,11 @@ export function Wrong() {
           client boundary (as if the root layout were marked{" "}
           <code>&quot;use client&quot;</code>).
         </DemoNote>
+        <DemoMetric
+          label="Tree status"
+          value="Whole tree is client"
+          tone="wrong"
+        />
         <div
           className={
             theme === "dark"

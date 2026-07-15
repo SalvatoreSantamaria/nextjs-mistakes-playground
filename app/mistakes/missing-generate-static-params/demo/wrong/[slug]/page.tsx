@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { connection } from "next/server";
+import { DemoMetric } from "@/components/DemoMetric";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export default async function OnDemandSlugPage({ params }: Props) {
   await connection();
   const { slug } = await params;
+  const renderedAt = new Date().toLocaleTimeString();
 
   return (
     <div className="space-y-4">
@@ -16,9 +18,11 @@ export default async function OnDemandSlugPage({ params }: Props) {
         ← Back to mistake #34
       </Link>
       <h1 className="text-2xl font-semibold">Post: {slug}</h1>
-      <p className="font-mono text-sm text-red-700 dark:text-red-300">
-        No generateStaticParams — this segment is rendered on demand
-        (connection() forced for the demo).
+      <DemoMetric label="Render mode" value="on-demand" tone="wrong" />
+      <DemoMetric label="renderedAt" value={renderedAt} tone="wrong" />
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        No <code>generateStaticParams</code> — refresh and watch{" "}
+        <code>renderedAt</code> change every time.
       </p>
     </div>
   );

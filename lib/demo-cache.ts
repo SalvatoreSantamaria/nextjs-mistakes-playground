@@ -239,9 +239,12 @@ export function peekDbUserHits(kind: "uncached" | "cached") {
   return kind === "uncached" ? uncachedDbHits().count : cachedDbHits().count;
 }
 
-// --- #36 / sticky note for overbroad revalidate ---
+// --- #36 / sticky note + unrelated sidebar for overbroad revalidate ---
 
 export const NOTE_TAG = "demo-note";
+export const SIDEBAR_TAG = "demo-sidebar";
+
+export type CachedPanel = { text: string; cachedAt: string };
 
 export function getNoteRaw() {
   if (!g.__demoNote) g.__demoNote = "Ship smaller invalidations";
@@ -253,7 +256,19 @@ export function setNote(text: string) {
 }
 
 export const getCachedNote = unstable_cache(
-  async () => getNoteRaw(),
-  ["demo-note-v1"],
+  async (): Promise<CachedPanel> => ({
+    text: getNoteRaw(),
+    cachedAt: new Date().toLocaleTimeString(),
+  }),
+  ["demo-note-v2"],
   { tags: [NOTE_TAG] },
+);
+
+export const getCachedSidebarTip = unstable_cache(
+  async (): Promise<CachedPanel> => ({
+    text: "Unrelated tip: keep invalidations narrow",
+    cachedAt: new Date().toLocaleTimeString(),
+  }),
+  ["demo-sidebar-v1"],
+  { tags: [SIDEBAR_TAG] },
 );

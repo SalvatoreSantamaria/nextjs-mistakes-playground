@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { DemoMetric } from "@/components/DemoMetric";
 
 type Props = { params: Promise<{ slug: string }> };
 
+const KNOWN = ["hello", "nextjs", "caching"] as const;
+
 export function generateStaticParams() {
-  return [{ slug: "hello" }, { slug: "nextjs" }, { slug: "caching" }];
+  return KNOWN.map((slug) => ({ slug }));
 }
 
 export default async function PrebuiltSlugPage({ params }: Props) {
@@ -18,9 +21,19 @@ export default async function PrebuiltSlugPage({ params }: Props) {
         ← Back to mistake #34
       </Link>
       <h1 className="text-2xl font-semibold">Post: {slug}</h1>
-      <p className="font-mono text-sm text-emerald-700 dark:text-emerald-300">
-        generateStaticParams() included this slug — eligible for prerender at
-        build time.
+      <DemoMetric
+        label="Render mode"
+        value="prerender-eligible"
+        tone="right"
+      />
+      <DemoMetric
+        label="generateStaticParams"
+        value={KNOWN.join(", ")}
+        tone="right"
+      />
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+        This slug was listed in <code>generateStaticParams</code>, so it can be
+        prerendered at build time (no per-request <code>connection()</code>).
       </p>
     </div>
   );

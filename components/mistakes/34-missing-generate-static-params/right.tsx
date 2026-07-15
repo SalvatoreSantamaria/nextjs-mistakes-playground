@@ -5,8 +5,8 @@ export function Right() {
   return (
     <div className="space-y-4">
       <DemoNote tone="right">
-        Export <code>generateStaticParams</code> for known slugs so they can be
-        prerendered at build time.
+        Export <code>generateStaticParams</code> for known slugs. Expect a{" "}
+        <code>prerender-eligible</code> badge on the demo pages.
       </DemoNote>
       <div className="flex flex-wrap gap-2">
         {["hello", "nextjs", "caching"].map((slug) => (

@@ -8,6 +8,7 @@ import {
   NOTE_TAG,
   POSTS_TAG,
   PROFILE_TAG,
+  SIDEBAR_TAG,
   addPost,
   resetPosts,
   resetProfile,
@@ -116,10 +117,12 @@ export async function resetPostsDemo() {
   revalidatePath("/mistakes/cache-tags");
 }
 
-/** #36 wrong: nuke the whole app cache for a tiny note edit */
+/** #36 wrong: broad invalidation — note + unrelated sidebar both expire */
 export async function saveNoteBroad(formData: FormData) {
   const text = String(formData.get("note") ?? "").trim() || "Empty note";
   setNote(text);
+  updateTag(NOTE_TAG);
+  updateTag(SIDEBAR_TAG);
   revalidatePath("/");
   revalidatePath("/mistakes", "layout");
 }

@@ -1,4 +1,5 @@
 import { DemoNote } from "@/components/DemoNote";
+import { DemoMetric } from "@/components/DemoMetric";
 import { slowSaveNote } from "@/lib/actions";
 import { SubmitButton } from "./submit-button";
 
@@ -17,6 +18,11 @@ export function Right() {
         />
         <SubmitButton />
       </form>
+      <DemoMetric
+        label="Boundaries"
+        value="Form: server · Button: client leaf"
+        tone="right"
+      />
     </div>
   );
 }

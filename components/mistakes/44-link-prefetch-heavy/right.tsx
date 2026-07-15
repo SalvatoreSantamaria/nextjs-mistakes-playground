@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { DemoNote } from "@/components/DemoNote";
+import { PrefetchList, type PrefetchLink } from "./prefetch-list";
 
-const HEAVY = [
+const HEAVY: PrefetchLink[] = [
   { href: "/mistakes/blocking-layout-await/demo/wrong", label: "Heavy demo A" },
   { href: "/mistakes/blocking-layout-await/demo/right", label: "Heavy demo B" },
   {
@@ -14,25 +15,10 @@ export function Right() {
   return (
     <div className="space-y-4">
       <DemoNote tone="right">
-        Set <code>prefetch=&#123;false&#125;</code> on expensive or gated links.
-        Keep default prefetch for cheap public pages.
+        <code>prefetch=&#123;false&#125;</code> — no eager prefetches on mount.
+        Cheap public links can still use the default.
       </DemoNote>
-      <ul className="space-y-2">
-        {HEAVY.map((item) => (
-          <li key={item.href}>
-            <Link
-              href={item.href}
-              prefetch={false}
-              className="font-mono text-sm underline"
-            >
-              {item.label}
-            </Link>
-            <span className="ml-2 text-xs text-emerald-700 dark:text-emerald-300">
-              prefetch=false
-            </span>
-          </li>
-        ))}
-      </ul>
+      <PrefetchList links={HEAVY} autoPrefetch={false} tone="right" />
       <p className="text-sm text-zinc-500">
         Cheap link still prefetches by default:{" "}
         <Link href="/" className="underline">

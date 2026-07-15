@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { DemoMetric } from "@/components/DemoMetric";
 
 /** Simulates a page that was incorrectly marked "use client" at the root */
 export function Wrong() {
@@ -14,6 +15,12 @@ export function Wrong() {
         </code>
         ). Even static text ships JS that did not need to.
       </p>
+      <DemoMetric
+        label="Client boundary"
+        value="entire panel"
+        tone="wrong"
+      />
+      <DemoMetric label="JS for this panel" value="high" tone="wrong" />
       <p className="font-mono text-sm">Client counter: {n}</p>
       <button
         type="button"

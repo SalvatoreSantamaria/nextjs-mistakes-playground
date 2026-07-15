@@ -2,6 +2,7 @@
 
 import { useFormStatus } from "react-dom";
 import { DemoNote } from "@/components/DemoNote";
+import { DemoMetric } from "@/components/DemoMetric";
 import { slowSaveNote } from "@/lib/actions";
 
 function Pending() {
@@ -33,6 +34,11 @@ export function Wrong() {
         />
         <Pending />
       </form>
+      <DemoMetric
+        label="Boundaries"
+        value="Form: client · Button: client"
+        tone="wrong"
+      />
     </div>
   );
 }
