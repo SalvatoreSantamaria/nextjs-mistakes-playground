@@ -1,29 +1,19 @@
-import { ExplainPanel } from "@/components/ExplainPanel";
+import Link from "next/link";
+import { DemoNote } from "@/components/DemoNote";
 
 export function Right() {
   return (
-    <ExplainPanel
-      label="Right"
-      description="Wrap the shared data loader in React's cache() so generateMetadata and the Page component dedupe onto a single call per request, no matter how many places import the helper."
-      code={`import { cache } from 'react'
-
-const getProduct = cache(async (id: string) => {
-  // Memoized per render pass — same 'id' returns the
-  // same in-flight promise instead of querying twice.
-  return db.product.findUnique({ where: { id } })
-})
-
-export async function generateMetadata({ params }: Props) {
-  const { id } = await params
-  const product = await getProduct(id) // query #1
-  return { title: product.name }
-}
-
-export default async function Page({ params }: Props) {
-  const { id } = await params
-  const product = await getProduct(id) // reuses query #1's result
-  return <ProductView product={product} />
-}`}
-    />
+    <div className="space-y-4">
+      <DemoNote tone="right">
+        Wrap the shared loader in React&apos;s <code>cache()</code> so metadata
+        and the page dedupe onto one call per request.
+      </DemoNote>
+      <Link
+        href="/mistakes/duplicate-fetch-metadata/demo/right"
+        className="inline-block rounded-md bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-500"
+      >
+        Open cache()-memoized demo →
+      </Link>
+    </div>
   );
 }

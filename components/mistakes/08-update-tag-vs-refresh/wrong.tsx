@@ -1,27 +1,28 @@
-import { ExplainPanel } from "@/components/ExplainPanel";
+import { getCachedProfile } from "@/lib/demo-cache";
+import { resetProfileDemo } from "@/lib/actions";
+import { RefreshProfileForm, WrongNote } from "./refresh-form";
 
-export function Wrong() {
+export async function Wrong() {
+  const profile = await getCachedProfile();
+
   return (
-    <ExplainPanel
-      label="Wrong"
-      description="After a mutation, the client calls router.refresh() expecting fresh data. It only clears the client-side router cache and re-renders — it never invalidates the tagged server-side cache, so the same stale fetch result comes right back."
-      code={`'use client'
-import { useRouter } from 'next/navigation'
-import { updateProfile } from './actions'
-
-export function ProfileForm() {
-  const router = useRouter()
-
-  async function onSubmit(formData: FormData) {
-    await updateProfile(formData)
-    // Re-fetches Server Components, but the tagged
-    // 'use cache' data for this user is still fresh
-    // from the server's point of view — same old data.
-    router.refresh()
-  }
-
-  return <form action={onSubmit}>{/* fields */}</form>
-}`}
-    />
+    <div className="space-y-4">
+      <WrongNote />
+      <p className="font-mono text-sm">
+        Cached profile name:{" "}
+        <span className="rounded-md border border-red-200 px-2 py-0.5 dark:border-red-900/50">
+          {profile.name}
+        </span>
+      </p>
+      <RefreshProfileForm name={profile.name} />
+      <form action={resetProfileDemo}>
+        <button
+          type="submit"
+          className="font-mono text-xs text-zinc-500 underline hover:text-zinc-800 dark:hover:text-zinc-200"
+        >
+          Reset profile
+        </button>
+      </form>
+    </div>
   );
 }

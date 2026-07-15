@@ -1,28 +1,29 @@
-import { ExplainPanel } from "@/components/ExplainPanel";
+import { DemoNote } from "@/components/DemoNote";
+import { getDbUserUncached, peekDbUserHits } from "@/lib/demo-cache";
 
-export function Wrong() {
+export async function Wrong() {
+  const userId = "u-turing";
+
+  // Two sibling Server Components each calling the same non-fetch loader.
+  const headerUser = await getDbUserUncached(userId);
+  const sidebarUser = await getDbUserUncached(userId);
+  const hits = peekDbUserHits("uncached");
+
   return (
-    <ExplainPanel
-      label="Wrong"
-      description="Multiple sibling Server Components each call a data-access function that uses a database client or SDK instead of fetch, so Next.js's automatic request memoization never kicks in and the query runs once per caller."
-      code={`// lib/data.ts
-export async function getUser(id: string) {
-  // db.query is not fetch(), so there's no automatic
-  // per-request de-duplication for this call.
-  return db.query('SELECT * FROM users WHERE id = $1', [id])
-}
-
-// Header.tsx
-export async function Header({ userId }: { userId: string }) {
-  const user = await getUser(userId) // query #1
-  return <span>{user.name}</span>
-}
-
-// Sidebar.tsx
-export async function Sidebar({ userId }: { userId: string }) {
-  const user = await getUser(userId) // query #2, same row
-  return <Avatar user={user} />
-}`}
-    />
+    <div className="space-y-4">
+      <DemoNote tone="wrong">
+        Header and Sidebar each call a non-<code>fetch</code> DB helper. Next.js
+        does not auto-dedupe that — two queries for the same row.
+      </DemoNote>
+      <p className="rounded-md border border-red-200 px-3 py-2 font-mono text-sm dark:border-red-900/50">
+        Header → {headerUser.name} ({headerUser.role})
+      </p>
+      <p className="rounded-md border border-red-200 px-3 py-2 font-mono text-sm dark:border-red-900/50">
+        Sidebar → {sidebarUser.name} ({sidebarUser.role})
+      </p>
+      <p className="font-mono text-sm text-red-700 dark:text-red-300">
+        getDbUser queries this render: <strong>{hits}</strong>
+      </p>
+    </div>
   );
 }

@@ -1,31 +1,19 @@
-import { ExplainPanel } from "@/components/ExplainPanel";
+import Link from "next/link";
+import { DemoNote } from "@/components/DemoNote";
 
 export function Right() {
   return (
-    <ExplainPanel
-      label="Right"
-      description="Fetch shared data once in an async layout and pass it down via context or props. The layout persists across sibling route navigations, so the fetch doesn't re-run on every page."
-      code={`// app/dashboard/layout.tsx
-import { UserProvider } from './user-context'
-
-export default async function DashboardLayout({
-  children,
-}: { children: React.ReactNode }) {
-  const user = await getUser() // fetched once per session
-
-  return (
-    <UserProvider value={user}>
-      <Sidebar user={user} />
-      {children}
-    </UserProvider>
-  )
-}
-
-// app/dashboard/settings/page.tsx
-export default function SettingsPage() {
-  const user = useUser() // reads context, no new fetch
-  return <Settings user={user} />
-}`}
-    />
+    <div className="space-y-4">
+      <DemoNote tone="right">
+        Fetch the shared user once in <code>layout.tsx</code>. Sibling
+        navigations reuse the layout — no repeated fetch.
+      </DemoNote>
+      <Link
+        href="/mistakes/layout-persistent-fetch/demo/right/settings"
+        className="inline-block rounded-md bg-emerald-700 px-3 py-1.5 text-sm text-white hover:bg-emerald-600 dark:bg-emerald-600 dark:hover:bg-emerald-500"
+      >
+        Open layout fetch demo →
+      </Link>
+    </div>
   );
 }

@@ -26,7 +26,8 @@ Open [http://localhost:3000](http://localhost:3000).
 - `lib/registry.tsx` — maps slug → Wrong/Right components
 - `app/mistakes/[slug]/page.tsx` — dynamic mistake page + `MistakeShell` toggle
 - `components/mistakes/*` — per-mistake Wrong/Right stubs
-- Nested demos: `/mistakes/loading-tsx/demo`, `/mistakes/error-tsx/demo`
+- Nested demos: `/mistakes/loading-tsx/demo`, `/mistakes/error-tsx/demo`,
+  `/mistakes/duplicate-fetch-metadata/demo/*`, `/mistakes/layout-persistent-fetch/demo/*`
 
 Toggle state is stored in `?mode=wrong|right` so links are shareable.
 

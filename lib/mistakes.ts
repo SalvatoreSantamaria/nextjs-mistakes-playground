@@ -84,11 +84,11 @@ export const mistakes: Mistake[] = [
     id: 8,
     slug: "update-tag-vs-refresh",
     title: "Using updateTag When You Mean to Use refresh",
-    mode: "explain",
+    mode: "live",
     problem:
       "Cache tag invalidation and router.refresh solve different staleness problems; mixing them up leaves bad UX.",
     solution:
-      "revalidateTag/revalidatePath for tagged static caches; router.refresh() to re-read dynamic data.",
+      "Use updateTag (or revalidateTag) for tagged server caches after mutations; router.refresh() only re-reads dynamic/uncached data.",
   },
   {
     id: 9,
@@ -164,7 +164,7 @@ export const mistakes: Mistake[] = [
     id: 16,
     slug: "duplicate-fetch-metadata",
     title: "Fetching the Same Data Twice (Metadata and Page)",
-    mode: "explain",
+    mode: "live",
     problem:
       "Calling the same fetch in generateMetadata and the page doubles work.",
     solution:
@@ -184,7 +184,7 @@ export const mistakes: Mistake[] = [
     id: 18,
     slug: "layout-persistent-fetch",
     title: "Not Using layout.tsx for Persistent Data Fetching",
-    mode: "explain",
+    mode: "live",
     problem:
       "Refetching shared nav/profile data on every page wastes work.",
     solution:
@@ -194,7 +194,7 @@ export const mistakes: Mistake[] = [
     id: 19,
     slug: "cache-expensive-functions",
     title: "Not Caching Repeatable Code / Expensive Functions",
-    mode: "explain",
+    mode: "live",
     problem:
       "The same expensive function runs multiple times in one render tree.",
     solution:
@@ -234,7 +234,7 @@ export const mistakes: Mistake[] = [
     id: 23,
     slug: "cache-request-memoization",
     title: "Not Using the cache Function for Request Memoization",
-    mode: "explain",
+    mode: "live",
     problem:
       "Identical requests fire multiple times in one render cycle.",
     solution:
@@ -284,7 +284,7 @@ export const mistakes: Mistake[] = [
     id: 28,
     slug: "cache-tags",
     title: "Not Tagging the Cache Correctly",
-    mode: "explain",
+    mode: "live",
     problem:
       "Without tags you cannot selectively invalidate; you end up purging broad caches.",
     solution:

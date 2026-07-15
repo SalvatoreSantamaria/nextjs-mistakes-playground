@@ -2,8 +2,16 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { addToCart, clearCart } from "./data";
+import {
+  POSTS_TAG,
+  PROFILE_TAG,
+  addPost,
+  resetPosts,
+  resetProfile,
+  setProfileName,
+} from "./demo-cache";
 
 /** Intentionally unprotected — wrong-way demo only */
 export async function unprotectedDeleteAll() {
@@ -64,4 +72,42 @@ export async function redirectRight(): Promise<void> {
 
 export async function serverRedirectHome() {
   redirect("/");
+}
+
+/** #08 wrong: mutate only — tagged cache stays fresh from the server's POV */
+export async function updateProfileWithoutTag(formData: FormData) {
+  const name = String(formData.get("name") ?? "").trim() || "Anonymous";
+  setProfileName(name);
+}
+
+/** #08 right: mutate + updateTag for read-your-own-writes */
+export async function updateProfileWithTag(formData: FormData) {
+  const name = String(formData.get("name") ?? "").trim() || "Anonymous";
+  setProfileName(name);
+  updateTag(PROFILE_TAG);
+}
+
+export async function resetProfileDemo() {
+  resetProfile();
+  updateTag(PROFILE_TAG);
+  revalidatePath("/mistakes/update-tag-vs-refresh");
+}
+
+/** #28 wrong: mutate but no tag to invalidate — list stays cached */
+export async function createPostWithoutTag(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim() || "Untitled";
+  addPost(title);
+}
+
+/** #28 right: mutate + expire the posts tag immediately */
+export async function createPostWithTag(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim() || "Untitled";
+  addPost(title);
+  updateTag(POSTS_TAG);
+}
+
+export async function resetPostsDemo() {
+  resetPosts();
+  updateTag(POSTS_TAG);
+  revalidatePath("/mistakes/cache-tags");
 }

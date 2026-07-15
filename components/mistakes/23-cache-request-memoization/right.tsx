@@ -1,29 +1,28 @@
-import { ExplainPanel } from "@/components/ExplainPanel";
+import { DemoNote } from "@/components/DemoNote";
+import { getDbUserCached, peekDbUserHits } from "@/lib/demo-cache";
 
-export function Right() {
+export async function Right() {
+  const userId = "u-turing";
+
+  const headerUser = await getDbUserCached(userId);
+  const sidebarUser = await getDbUserCached(userId);
+  const hits = peekDbUserHits("cached");
+
   return (
-    <ExplainPanel
-      label="Right"
-      description="Wrap non-fetch data access in React's cache() so it gets the same per-request memoization as fetch — every Server Component calling it with the same arguments shares one in-flight query."
-      code={`// lib/data.ts
-import { cache } from 'react'
-
-export const getUser = cache(async (id: string) => {
-  // Memoized for the lifetime of a single render pass.
-  return db.query('SELECT * FROM users WHERE id = $1', [id])
-})
-
-// Header.tsx
-export async function Header({ userId }: { userId: string }) {
-  const user = await getUser(userId) // query #1
-  return <span>{user.name}</span>
-}
-
-// Sidebar.tsx
-export async function Sidebar({ userId }: { userId: string }) {
-  const user = await getUser(userId) // reuses query #1
-  return <Avatar user={user} />
-}`}
-    />
+    <div className="space-y-4">
+      <DemoNote tone="right">
+        Wrap the loader in React&apos;s <code>cache()</code> so both Server
+        Components share one in-flight query for the same arguments.
+      </DemoNote>
+      <p className="rounded-md border border-emerald-200 px-3 py-2 font-mono text-sm dark:border-emerald-900/50">
+        Header → {headerUser.name} ({headerUser.role})
+      </p>
+      <p className="rounded-md border border-emerald-200 px-3 py-2 font-mono text-sm dark:border-emerald-900/50">
+        Sidebar → {sidebarUser.name} ({sidebarUser.role})
+      </p>
+      <p className="font-mono text-sm text-emerald-700 dark:text-emerald-300">
+        getDbUser queries this render: <strong>{hits}</strong>
+      </p>
+    </div>
   );
 }
