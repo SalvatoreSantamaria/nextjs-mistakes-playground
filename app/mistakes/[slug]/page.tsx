@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props) {
   const mistake = getMistake(slug);
   if (!mistake) return { title: "Not found" };
   return {
-    title: `#${mistake.id} ${mistake.title} · Next.js Mistakes`,
+    title: `${mistake.title} · Next.js Mistakes`,
     description: mistake.problem,
   };
 }

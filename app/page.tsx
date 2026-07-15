@@ -42,9 +42,6 @@ export default function Home() {
                     href={`/mistakes/${m.slug}`}
                     className="flex flex-wrap items-center gap-3 rounded-lg border border-zinc-200 bg-white px-4 py-3 transition hover:border-[var(--accent)] hover:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:hover:border-[var(--accent)]"
                   >
-                    <span className="w-8 font-mono text-sm text-zinc-400">
-                      {String(m.id).padStart(2, "0")}
-                    </span>
                     <span className="min-w-0 flex-1 font-medium text-zinc-900 dark:text-zinc-50">
                       {m.title}
                     </span>
