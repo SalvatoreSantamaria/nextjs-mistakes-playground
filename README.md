@@ -1,6 +1,6 @@
 # Next.js Mistakes Playground
 
-Interactive Wrong / Right demos of 29 common Next.js App Router mistakes. Built for **Vercel** (full App Router server runtime) — not GitHub Pages static hosting.
+Interactive Wrong / Right demos of common Next.js App Router mistakes. Built for **Vercel** (full App Router server runtime) — not GitHub Pages static hosting.
 
 ## Local development
 
@@ -22,7 +22,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Structure
 
-- `lib/mistakes.ts` — catalog of all 29 mistakes (`live` vs `explain`)
+- `lib/mistakes.ts` — catalog of mistakes (`live` vs `explain`)
 - `lib/registry.tsx` — maps slug → Wrong/Right components
 - `app/mistakes/[slug]/page.tsx` — dynamic mistake page + `MistakeShell` toggle
 - `components/mistakes/*` — per-mistake Wrong/Right stubs

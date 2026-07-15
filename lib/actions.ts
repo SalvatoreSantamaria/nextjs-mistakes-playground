@@ -5,13 +5,16 @@ import { redirect } from "next/navigation";
 import { revalidatePath, updateTag } from "next/cache";
 import { addToCart, clearCart } from "./data";
 import {
+  NOTE_TAG,
   POSTS_TAG,
   PROFILE_TAG,
   addPost,
   resetPosts,
   resetProfile,
+  setNote,
   setProfileName,
 } from "./demo-cache";
+import { bumpFetchDemoValue } from "./fetch-demo-store";
 
 /** Intentionally unprotected — wrong-way demo only */
 export async function unprotectedDeleteAll() {
@@ -36,6 +39,7 @@ export async function setDemoSession(formData: FormData) {
   const jar = await cookies();
   jar.set("demo_session", role, { path: "/" });
   revalidatePath("/mistakes/unprotected-server-actions");
+  revalidatePath("/mistakes/client-auth-redirect");
 }
 
 export async function addItemAction(formData: FormData) {
@@ -110,4 +114,35 @@ export async function resetPostsDemo() {
   resetPosts();
   updateTag(POSTS_TAG);
   revalidatePath("/mistakes/cache-tags");
+}
+
+/** #36 wrong: nuke the whole app cache for a tiny note edit */
+export async function saveNoteBroad(formData: FormData) {
+  const text = String(formData.get("note") ?? "").trim() || "Empty note";
+  setNote(text);
+  revalidatePath("/");
+  revalidatePath("/mistakes", "layout");
+}
+
+/** #36 right: invalidate only the note tag */
+export async function saveNoteNarrow(formData: FormData) {
+  const text = String(formData.get("note") ?? "").trim() || "Empty note";
+  setNote(text);
+  updateTag(NOTE_TAG);
+}
+
+/** #43 demo form action */
+export async function slowSaveNote(formData: FormData) {
+  await new Promise((r) => setTimeout(r, 900));
+  const text = String(formData.get("note") ?? "").trim() || "Saved";
+  setNote(text);
+  updateTag(NOTE_TAG);
+  revalidatePath("/mistakes/form-status-boundary");
+}
+
+/** #40 / #45 — bump shared version for cache demos */
+export async function bumpDemoVersion() {
+  bumpFetchDemoValue();
+  revalidatePath("/mistakes/fetch-cache-defaults");
+  revalidatePath("/mistakes/static-route-handler-cache");
 }

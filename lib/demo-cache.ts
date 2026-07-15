@@ -8,6 +8,7 @@ const g = globalThis as unknown as {
   __demoPosts?: { id: string; title: string }[];
   __demoPostsGen?: number;
   __demoCounters?: Record<string, number>;
+  __demoNote?: string;
 };
 
 function counters() {
@@ -237,3 +238,22 @@ export const getDbUserCached = cache(async (id: string) => {
 export function peekDbUserHits(kind: "uncached" | "cached") {
   return kind === "uncached" ? uncachedDbHits().count : cachedDbHits().count;
 }
+
+// --- #36 / sticky note for overbroad revalidate ---
+
+export const NOTE_TAG = "demo-note";
+
+export function getNoteRaw() {
+  if (!g.__demoNote) g.__demoNote = "Ship smaller invalidations";
+  return g.__demoNote;
+}
+
+export function setNote(text: string) {
+  g.__demoNote = text;
+}
+
+export const getCachedNote = unstable_cache(
+  async () => getNoteRaw(),
+  ["demo-note-v1"],
+  { tags: [NOTE_TAG] },
+);

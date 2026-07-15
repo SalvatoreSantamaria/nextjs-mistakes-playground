@@ -6,8 +6,6 @@ import { Wrong as W02 } from "@/components/mistakes/02-unprotected-server-action
 import { Right as R02 } from "@/components/mistakes/02-unprotected-server-actions/right";
 import { Wrong as W03 } from "@/components/mistakes/03-gets-in-use-server-file/wrong";
 import { Right as R03 } from "@/components/mistakes/03-gets-in-use-server-file/right";
-import { Wrong as W04 } from "@/components/mistakes/04-ai-code-without-review/wrong";
-import { Right as R04 } from "@/components/mistakes/04-ai-code-without-review/right";
 import { Wrong as W05 } from "@/components/mistakes/05-route-handlers-vs-rsc/wrong";
 import { Right as R05 } from "@/components/mistakes/05-route-handlers-vs-rsc/right";
 import { Wrong as W06 } from "@/components/mistakes/06-suspense-wrong-level/wrong";
@@ -58,6 +56,38 @@ import { Wrong as W28 } from "@/components/mistakes/28-cache-tags/wrong";
 import { Right as R28 } from "@/components/mistakes/28-cache-tags/right";
 import { Wrong as W29 } from "@/components/mistakes/29-mutations-in-rsc/wrong";
 import { Right as R29 } from "@/components/mistakes/29-mutations-in-rsc/right";
+import { Wrong as W30 } from "@/components/mistakes/30-rsc-calls-own-api/wrong";
+import { Right as R30 } from "@/components/mistakes/30-rsc-calls-own-api/right";
+import { Wrong as W31 } from "@/components/mistakes/31-sequential-fetch-waterfall/wrong";
+import { Right as R31 } from "@/components/mistakes/31-sequential-fetch-waterfall/right";
+import { Wrong as W32 } from "@/components/mistakes/32-no-next-dynamic/wrong";
+import { Right as R32 } from "@/components/mistakes/32-no-next-dynamic/right";
+import { Wrong as W33 } from "@/components/mistakes/33-client-auth-redirect/wrong";
+import { Right as R33 } from "@/components/mistakes/33-client-auth-redirect/right";
+import { Wrong as W34 } from "@/components/mistakes/34-missing-generate-static-params/wrong";
+import { Right as R34 } from "@/components/mistakes/34-missing-generate-static-params/right";
+import { Wrong as W35 } from "@/components/mistakes/35-non-serializable-props/wrong";
+import { Right as R35 } from "@/components/mistakes/35-non-serializable-props/right";
+import { Wrong as W36 } from "@/components/mistakes/36-overbroad-revalidate/wrong";
+import { Right as R36 } from "@/components/mistakes/36-overbroad-revalidate/right";
+import { Wrong as W37 } from "@/components/mistakes/37-route-groups/wrong";
+import { Right as R37 } from "@/components/mistakes/37-route-groups/right";
+import { Wrong as W38 } from "@/components/mistakes/38-searchparams-without-suspense/wrong";
+import { Right as R38 } from "@/components/mistakes/38-searchparams-without-suspense/right";
+import { Wrong as W39 } from "@/components/mistakes/39-blocking-layout-await/wrong";
+import { Right as R39 } from "@/components/mistakes/39-blocking-layout-await/right";
+import { Wrong as W40 } from "@/components/mistakes/40-fetch-cache-defaults/wrong";
+import { Right as R40 } from "@/components/mistakes/40-fetch-cache-defaults/right";
+import { Wrong as W41 } from "@/components/mistakes/41-rsc-secret-leak/wrong";
+import { Right as R41 } from "@/components/mistakes/41-rsc-secret-leak/right";
+import { Wrong as W42 } from "@/components/mistakes/42-missing-server-only/wrong";
+import { Right as R42 } from "@/components/mistakes/42-missing-server-only/right";
+import { Wrong as W43 } from "@/components/mistakes/43-form-status-boundary/wrong";
+import { Right as R43 } from "@/components/mistakes/43-form-status-boundary/right";
+import { Wrong as W44 } from "@/components/mistakes/44-link-prefetch-heavy/wrong";
+import { Right as R44 } from "@/components/mistakes/44-link-prefetch-heavy/right";
+import { Wrong as W45 } from "@/components/mistakes/45-static-route-handler-cache/wrong";
+import { Right as R45 } from "@/components/mistakes/45-static-route-handler-cache/right";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type MistakeView = ComponentType<any>;
@@ -71,7 +101,6 @@ const registry: Record<string, MistakeViews> = {
   "use-client-on-root": { Wrong: W01, Right: R01 },
   "unprotected-server-actions": { Wrong: W02, Right: R02 },
   "gets-in-use-server-file": { Wrong: W03, Right: R03 },
-  "ai-code-without-review": { Wrong: W04, Right: R04 },
   "route-handlers-vs-rsc": { Wrong: W05, Right: R05 },
   "suspense-wrong-level": { Wrong: W06, Right: R06 },
   "use-cache-vs-private": { Wrong: W07, Right: R07 },
@@ -97,6 +126,22 @@ const registry: Record<string, MistakeViews> = {
   "image-sizes": { Wrong: W27, Right: R27 },
   "cache-tags": { Wrong: W28, Right: R28 },
   "mutations-in-rsc": { Wrong: W29, Right: R29 },
+  "rsc-calls-own-api": { Wrong: W30, Right: R30 },
+  "sequential-fetch-waterfall": { Wrong: W31, Right: R31 },
+  "no-next-dynamic": { Wrong: W32, Right: R32 },
+  "client-auth-redirect": { Wrong: W33, Right: R33 },
+  "missing-generate-static-params": { Wrong: W34, Right: R34 },
+  "non-serializable-props": { Wrong: W35, Right: R35 },
+  "overbroad-revalidate": { Wrong: W36, Right: R36 },
+  "route-groups": { Wrong: W37, Right: R37 },
+  "searchparams-without-suspense": { Wrong: W38, Right: R38 },
+  "blocking-layout-await": { Wrong: W39, Right: R39 },
+  "fetch-cache-defaults": { Wrong: W40, Right: R40 },
+  "rsc-secret-leak": { Wrong: W41, Right: R41 },
+  "missing-server-only": { Wrong: W42, Right: R42 },
+  "form-status-boundary": { Wrong: W43, Right: R43 },
+  "link-prefetch-heavy": { Wrong: W44, Right: R44 },
+  "static-route-handler-cache": { Wrong: W45, Right: R45 },
 };
 
 export function getMistakeViews(slug: string): MistakeViews | undefined {

@@ -16,8 +16,8 @@ export default function Home() {
           Next.js Mistakes Playground
         </h1>
         <p className="max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
-          Twenty-nine common App Router mistakes. Toggle each page between the
-          wrong way and the right way. {live} live demos run on the server;
+          {mistakes.length} common App Router mistakes. Toggle each page between
+          the wrong way and the right way. {live} live demos run on the server;
           {explain} are explanation-only with code samples.
         </p>
       </section>

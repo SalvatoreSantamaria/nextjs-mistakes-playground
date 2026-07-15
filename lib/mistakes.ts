@@ -41,16 +41,6 @@ export const mistakes: Mistake[] = [
       "Keep reads in lib/data.ts (or similar). Only put mutations in \"use server\" files.",
   },
   {
-    id: 4,
-    slug: "ai-code-without-review",
-    title: "Shipping AI-Generated Code to Production Without Review",
-    mode: "explain",
-    problem:
-      "AI-generated code can ship bugs, missing edge cases, or inconsistent patterns if merged unchecked.",
-    solution:
-      "Use AI for speed, then review thoroughly — humans plus AI review tools — before production.",
-  },
-  {
     id: 5,
     slug: "route-handlers-vs-rsc",
     title: "Using Route Handlers Instead of Server Components for GET Requests",
@@ -299,6 +289,166 @@ export const mistakes: Mistake[] = [
       "Mutating during RSC render causes races and stale UI — components do not re-render after side effects.",
     solution:
       "Fetch in Server Components; mutate via Server Actions; then revalidate or refresh.",
+  },
+  {
+    id: 30,
+    slug: "rsc-calls-own-api",
+    title: "Calling Your Own Route Handlers from Server Components",
+    mode: "live",
+    problem:
+      "An RSC that fetch()es its own /api route adds a pointless HTTP hop, base-URL pain, and extra serialization.",
+    solution:
+      "Put shared reads in a data/DAL module and import it from both RSC and Route Handlers.",
+  },
+  {
+    id: 31,
+    slug: "sequential-fetch-waterfall",
+    title: "Creating Sequential Data-Fetching Waterfalls",
+    mode: "live",
+    problem:
+      "Awaiting independent requests one after another doubles latency for no reason.",
+    solution:
+      "Start independent fetches together and await Promise.all (or stream with Suspense).",
+  },
+  {
+    id: 32,
+    slug: "no-next-dynamic",
+    title: "Eagerly Importing Heavy Client Libraries",
+    mode: "live",
+    problem:
+      "Statically importing large client-only UI pulls it into the initial JS bundle.",
+    solution:
+      "Lazy-load with next/dynamic and a loading fallback so the shell paints first.",
+  },
+  {
+    id: 33,
+    slug: "client-auth-redirect",
+    title: "Doing Auth Redirects Only on the Client",
+    mode: "live",
+    problem:
+      "Checking auth in useEffect + router.push flashes protected UI before redirecting.",
+    solution:
+      "Redirect in proxy.ts (or the server) before the page renders for protected segments.",
+  },
+  {
+    id: 34,
+    slug: "missing-generate-static-params",
+    title: "Skipping generateStaticParams for Known Dynamic Routes",
+    mode: "live",
+    problem:
+      "Dynamic segments with a known finite set of params are rendered on demand with no prebuild.",
+    solution:
+      "Export generateStaticParams so common paths can be prerendered.",
+  },
+  {
+    id: 35,
+    slug: "non-serializable-props",
+    title: "Passing Non-Serializable Props from Server to Client",
+    mode: "live",
+    problem:
+      "Functions, class instances, and other non-serializable values cannot cross the RSC → client boundary.",
+    solution:
+      "Pass plain data (strings, numbers, plain objects); reconstruct richer types on the client.",
+  },
+  {
+    id: 36,
+    slug: "overbroad-revalidate",
+    title: "Revalidating Far Too Broadly After Mutations",
+    mode: "live",
+    problem:
+      "Calling revalidatePath('/') (or huge trees) after a tiny write thrash-caches unrelated UI.",
+    solution:
+      "Invalidate the specific path or cache tag that actually changed.",
+  },
+  {
+    id: 37,
+    slug: "route-groups",
+    title: "Not Using Route Groups to Organize the App Tree",
+    mode: "explain",
+    problem:
+      "A flat app/ folder mixes auth, app, and admin routes and makes shared layouts awkward.",
+    solution:
+      "Use (route groups) to share layouts and organize code without changing URLs.",
+  },
+  {
+    id: 38,
+    slug: "searchparams-without-suspense",
+    title: "Using useSearchParams Without a Suspense Boundary",
+    mode: "live",
+    problem:
+      "Calling useSearchParams in a large client tree without Suspense can bail out static rendering for the whole segment.",
+    solution:
+      "Isolate useSearchParams in a small client child wrapped in Suspense.",
+  },
+  {
+    id: 39,
+    slug: "blocking-layout-await",
+    title: "Blocking the Entire Tree with a Layout Await",
+    mode: "live",
+    problem:
+      "Awaiting slow data in layout.tsx delays every child route until that work finishes.",
+    solution:
+      "Keep layouts light; move slow fetches into slotted children behind Suspense.",
+  },
+  {
+    id: 40,
+    slug: "fetch-cache-defaults",
+    title: "Not Setting fetch Cache Options Intentionally",
+    mode: "live",
+    problem:
+      "Relying on implicit fetch caching leaves data mysteriously stale or over-dynamic.",
+    solution:
+      "Choose cache: 'no-store', next.revalidate, or next.tags explicitly for each request.",
+  },
+  {
+    id: 41,
+    slug: "rsc-secret-leak",
+    title: "Leaking Secrets Through the RSC Payload",
+    mode: "live",
+    problem:
+      "Passing full DB rows (tokens, hashes) into Client Components ships secrets in the flight payload.",
+    solution:
+      "Map to a public DTO before crossing the server/client boundary.",
+  },
+  {
+    id: 42,
+    slug: "missing-server-only",
+    title: "Forgetting server-only on Data Access Modules",
+    mode: "live",
+    problem:
+      "Without import 'server-only', a DAL can be imported into Client Components and leak server code/secrets.",
+    solution:
+      "Mark server modules with server-only; expose data to the client via RSC props or Server Actions.",
+  },
+  {
+    id: 43,
+    slug: "form-status-boundary",
+    title: "Marking a Whole Form Client Just for useFormStatus",
+    mode: "live",
+    problem:
+      "Wrapping an entire form in 'use client' only to show a pending state pulls unnecessary JS.",
+    solution:
+      "Keep the form on the server; extract a tiny SubmitButton client child that uses useFormStatus.",
+  },
+  {
+    id: 44,
+    slug: "link-prefetch-heavy",
+    title: "Prefetching Heavy or Auth-Gated Links Unconditionally",
+    mode: "live",
+    problem:
+      "Default Link prefetch on large lists or protected destinations wastes bandwidth and work.",
+    solution:
+      "Set prefetch={false} (or prefetch on hover) for expensive or gated destinations.",
+  },
+  {
+    id: 45,
+    slug: "static-route-handler-cache",
+    title: "Surprised by Cached GET Route Handlers",
+    mode: "live",
+    problem:
+      "GET Route Handlers can be cached; a “current time” API then returns a stale timestamp.",
+    solution:
+      "Opt into dynamic rendering / no-store when the handler must always be fresh.",
   },
 ];
 
